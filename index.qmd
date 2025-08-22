@@ -1,0 +1,43 @@
+---
+title: "PhD Chapter 3 — Spatial Beta Diversity"
+author: "Rahil Amin"
+format:
+  html:
+    toc: true
+    theme: cosmo
+---
+
+# Overview
+
+This site documents the analytical workflow for Chapter 3 of Rahil Amin's PhD, focused on spatial analysis of species occurrences and scale-dependent beta-diversity.
+
+- Data acquisition from the Atlas of Living Australia (ALA).
+- Standardization of occurrences to grid systems.
+- Generation of hexagonal grids at multiple spatial resolutions.
+- Computation and visualization of beta-diversity across scales.
+
+For a concise project overview, see `docs/overview.md` in the repository.
+
+# Reproducible Pipeline
+
+The `targets` pipeline (`_targets.R`) orchestrates data download, processing, grid generation, and beta metrics.
+
+Steps:
+
+1. Edit the `config` list in `_targets.R` with your paths and preferences.
+2. Ensure required packages are installed and initialize `renv` for reproducibility (see README).
+3. Run in R:
+
+```r
+library(targets)
+tar_make()
+```
+
+# Functions
+
+Core functions are organized one-per-file under `R/` and documented with roxygen2.
+
+# Results
+
+As you run the pipeline, add new pages/sections here to display summaries and figures (e.g., ridge plots of beta metrics by scale).
+

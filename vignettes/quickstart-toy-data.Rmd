@@ -1,0 +1,79 @@
+---
+title: "Quickstart with Toy Data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Quickstart with Toy Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This vignette demonstrates the basic workflow using the bundled toy dataset in `inst/extdata/`.
+
+```r
+library(PhDChapter3)
+library(sf)
+```
+
+## Inputs
+
+```r
+# Locate toy data bundled with the package
+area_path   <- system.file("extdata", "study_area.geojson", package = "PhDChapter3")
+species_csv <- system.file("extdata", "species_list.csv", package = "PhDChapter3")
+grid_csv    <- system.file("extdata", "grid.csv", package = "PhDChapter3")
+occ_csv     <- system.file("extdata", "occ_sample.csv", package = "PhDChapter3")
+
+shp         <- sf::read_sf(area_path)
+species_tbl <- read.csv(species_csv)
+```
+
+## Snap occurrences to nearest grid
+
+```r
+snapped <- process_presence_data(
+  grid    = grid_csv,
+  pres    = occ_csv,
+  crs_ref = sf::st_crs(shp)
+)
+head(snapped)
+```
+
+## Create multi-scale hex grids
+
+```r
+hexes <- create_variable_hex_grids(
+  shapefile_path  = area_path,
+  max_hex_km      = 10,
+  min_hex_km      = 5,
+  reduction_factor = 0.9,
+  num_cores       = 1
+)
+names(hexes)
+```
+
+## Build species-by-hex matrices and compute beta metrics
+
+```r
+# process_all_grids expects a CSV path; write a temporary file
+tmp_csv <- tempfile(fileext = ".csv")
+utils::write.csv(snapped, tmp_csv, row.names = FALSE)
+
+species_mats <- process_all_grids(
+  hex_grids_list    = hexes,
+  presence_all_path = tmp_csv,
+  total_cores       = 1,
+  crs_ref           = sf::st_crs(shp)
+)
+
+metrics <- beta_across_scales(
+  hex_species_matrices = species_mats,
+  index_family         = "sorensen",
+  framework            = "BAS",
+  num_cores            = 1
+)
+
+str(metrics[[1]])
+```
+
+This toy example should run without network access and gives you a template to adapt to your study data.
+

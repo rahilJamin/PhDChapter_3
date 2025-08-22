@@ -1,0 +1,12 @@
+^docs/
+^_targets.R$
+^_targets/
+^renv/
+^renv\.lock$
+^\.Rprofile$
+^_quarto\.yml$
+^index\.qmd$
+^data/
+^\.git/
+^.*\.Rproj$
+^\.Rproj\.user$
