@@ -1,0 +1,11 @@
+model = "gpt-5"
+model_reasoning_effort = "high"
+approval_policy = "never"
+sandbox_mode    = "workspace-write"
+network_access = true
+
+[sandbox_workspace_write]
+# Constrain read/write to the workspace.
+read_paths  = ["./"]
+write_paths = ["./"]
+allow_exec = ["bash", "make", "git", "R", "Rscript", "timeout"]
